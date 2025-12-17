@@ -1,4 +1,7 @@
 # config.py
+'''
+Buttons are BCM Numbered (5 means GPIO5, not Pin 5)
+'''
 BUTTON_PINS = [
     5,   # Button 1
     6,   # Button 2
@@ -11,4 +14,16 @@ BUTTON_PINS = [
     21,  # Button 9
 ]
 
-DEBOUNCE_MS = 200
+BUTTON_LABELS = {
+    5:  "Sound 1",
+    6:  "Sound 2",
+    13: "Sound 3",
+    19: "Sound 4",
+    26: "Sound 5",
+    12: "Sound 6",
+    16: "Sound 7",
+    20: "Sound 8",
+    21: "Sound 9"
+}
+
+DEBOUNCE_MS = 200 # Debounce window that helps prevent false double-triggers

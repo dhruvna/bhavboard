@@ -6,8 +6,8 @@ from config import BUTTON_PINS, DEBOUNCE_MS
 class ButtonManager:
     def __init__(self):
         GPIO.setmode(GPIO.BCM)
-        self.last_state = {}
-        self.last_time = {}
+        self.last_state = {} # remember what state the button was in last
+        self.last_time = {} # and when we last accepted a press (debounce protection)
 
         for pin in BUTTON_PINS:
             GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -17,12 +17,12 @@ class ButtonManager:
     def poll(self):
         """Return list of pins that were newly pressed"""
         pressed = []
-        now = time.time() * 1000  # ms
+        now = time.time() * 1000  # convert to ms
 
         for pin in BUTTON_PINS:
-            state = GPIO.input(pin)
+            state = GPIO.input(pin) # read each pin 
 
-            if self.last_state[pin] == 1 and state == 0:
+            if self.last_state[pin] == 1 and state == 0: # active low, so only activate on 1->0
                 if now - self.last_time[pin] > DEBOUNCE_MS:
                     pressed.append(pin)
                     self.last_time[pin] = now

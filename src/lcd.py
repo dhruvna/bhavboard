@@ -23,3 +23,4 @@ class LCDManager:
 
     def clear(self):
         self.lcd.clear()
+

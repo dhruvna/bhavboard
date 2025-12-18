@@ -12,12 +12,16 @@ class LCDManager:
 
         self.clear()
 
-    def show(self, line1="", line2=""):
+    def show(self, text=""):
         self.lcd.clear()
-        self.lcd.write_string(line1)
-        if line2:
-            self.lcd.crlf()
-            self.lcd.write_string(line2)
+        self.lcd.write_string(text)
+
+    # def show(self, line1="", line2=""):
+    #     self.lcd.clear()
+    #     self.lcd.write_string(line1)
+    #     if line2:
+    #         self.lcd.crlf()
+    #         self.lcd.write_string(line2)
 
     def clear(self):
         self.lcd.clear()

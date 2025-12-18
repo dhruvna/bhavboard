@@ -7,6 +7,10 @@ import time
 def main():
     buttons = ButtonManager()
     lcd = LCDManager()
+    lcd.show("BhavBoard", "Initialized")
+    time.sleep(2)
+    lcd.show("Push a button", "to begin!")
+    lcd.show("sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss", "ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt")
 
     try:
         while True:
@@ -15,6 +19,7 @@ def main():
                 lcd.show(f"Button {pin} Pressed")
                 time.sleep(1)
                 lcd.show("Playing:", BUTTON_MAPPING[pin]["label"])
+                time.sleep(1)
                 # Code to play the sound file
             time.sleep(0.01)
 

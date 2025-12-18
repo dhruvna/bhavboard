@@ -1,7 +1,7 @@
 # src/buttons.py
 import RPi.GPIO as GPIO
 import time
-from config import BUTTON_PINS, DEBOUNCE_MS
+from config import BUTTON_MAPPING, DEBOUNCE_MS
 
 class ButtonManager:
     def __init__(self):
@@ -9,7 +9,7 @@ class ButtonManager:
         self.last_state = {} # remember what state the button was in last
         self.last_time = {} # and when we last accepted a press (debounce protection)
 
-        for pin in BUTTON_PINS:
+        for pin in BUTTON_MAPPING:
             GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
             self.last_state[pin] = GPIO.input(pin)
             self.last_time[pin] = 0
@@ -19,7 +19,7 @@ class ButtonManager:
         pressed = []
         now = time.time() * 1000  # convert to ms
 
-        for pin in BUTTON_PINS:
+        for pin in BUTTON_MAPPING:
             state = GPIO.input(pin) # read each pin 
 
             if self.last_state[pin] == 1 and state == 0: # active low, so only activate on 1->0

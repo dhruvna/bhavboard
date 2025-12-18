@@ -15,8 +15,9 @@ def main():
         while True:
             presses = buttons.poll()
             for pin in presses:
-                lcd.show(f"Button {pin} Pressed", BUTTON_MAPPING[pin]["label"])
+                lcd.show(f"Button {pin} Pressed")
                 time.sleep(1)
+                lcd.show(f"Playing {BUTTON_MAPPING[pin]['label']}")
                 # Code to play the sound file
             time.sleep(0.01)
 

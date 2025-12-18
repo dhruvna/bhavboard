@@ -67,6 +67,8 @@ Portable button-based soundboard built on a Raspberry Pi Zero W.
 
 - Standardize run procedure:
 - `source .venv/bin/activate`
+- `pip install -r requirements.txt`
+- `i2cdetect -y 1` should show an address available, ensure LCD driver used this one
 - `python src/main.py`
 
 ---

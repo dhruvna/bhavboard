@@ -17,7 +17,7 @@ def main():
             for pin in presses:
                 lcd.show(f"Button {pin} Pressed")
                 time.sleep(1)
-                lcd.show(f"Playing {BUTTON_MAPPING[pin]['label']}")
+                lcd.show(f"Playing: ", f"{BUTTON_MAPPING[pin]['label']}")
                 # Code to play the sound file
             time.sleep(0.01)
 

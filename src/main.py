@@ -11,6 +11,7 @@ def main():
     time.sleep(2)
     # lcd.show("Push a button", "to begin!")
     lcd.show("11111111111111111111111111111111111111111111111111111111122222222222222222222222222222222222222222222222222222222222222222222222222222222ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt")
+    lcd.show("BhavBoard \n Initialized")
 
     try:
         while True:

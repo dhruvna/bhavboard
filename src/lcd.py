@@ -12,9 +12,9 @@ class LCDManager:
         )
 
         self.clear()
-        self.lcd.display_message("BhavBoard", "Initialized")
+        self.show("BhavBoard", "Initialized")
 
-    def display_message(self, line1, line2=""):
+    def show(self, line1, line2=""):
         self.lcd.clear()
         self.lcd.write_string(line1)
         if line2:

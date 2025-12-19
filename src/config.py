@@ -30,22 +30,22 @@ BUTTON_MAPPING = {
     },
     12: {
         "index": 6,
-        "label": "THEY BE LIKE",
+        "label": "IRAQ6",
         "sound": "they_be_like.wav"
     },
     16: {
         "index": 7,
-        "label": "Zaahen2",
+        "label": "IRAQ7",
         "sound": "Zaahen1.wav"
     },
     20: {
         "index": 8,
-        "label": "Zaahen2",
+        "label": "IRAQ8",
         "sound": "Zaahen2.wav"
     },
     21: {
         "index": 9,
-        "label": "Zaahen3",
+        "label": "IRAQ9",
         "sound": "Zaahen3.wav"
     }
 }

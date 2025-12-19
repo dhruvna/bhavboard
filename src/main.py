@@ -24,7 +24,7 @@ def main():
     except KeyboardInterrupt:
         buttons.cleanup()
         lcd.show("Exiting cleanly")
-        time.sleep(2.5)
+        time.sleep(1)
         lcd.clear()
 
 if __name__ == "__main__":

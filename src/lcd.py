@@ -14,13 +14,18 @@ class LCDManager:
         self.clear()
 
     def show(self, line1="", line2=""):
-        self.lcd.clear()
-        self.lcd.write_string(line1)
-        if line2:
-            self.lcd.crlf()
-            self.lcd.write_string(line2)
-        time.sleep(0.25)  # small delay to ensure the message is displayed
+        try:
+            self.lcd.clear()
+            self.lcd.write_string(line1)
+            if line2:
+                self.lcd.crlf()
+                self.lcd.write_string(line2)
+            time.sleep(0.25)  # small delay to ensure the message is displayed
+        except OSError as e:
+            print(f"[LCD] I2C Error: {e}")
 
     def clear(self):
-        self.lcd.clear()
-
+        try:
+            self.lcd.clear()
+        except OSError as e:
+            print(f"[LCD] I2C Error: {e}")

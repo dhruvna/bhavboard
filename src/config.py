@@ -35,17 +35,17 @@ BUTTON_MAPPING = {
     },
     16: {
         "index": 7,
-        "label": "يها الفارس",
+        "label": "Zaahen2",
         "sound": "Zaahen1.wav"
     },
     20: {
         "index": 8,
-        "label": "لست بآثم",
+        "label": "Zaahen2",
         "sound": "Zaahen2.wav"
     },
     21: {
         "index": 9,
-        "label": "إن وِزر هذا العنف",
+        "label": "Zaahen3",
         "sound": "Zaahen3.wav"
     }
 }

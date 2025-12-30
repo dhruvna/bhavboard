@@ -97,14 +97,16 @@ def main():
                 elif idx == 1:
                     if held_for >= 0.4 and (now - last_repeat[pin] >= VOL_REPEAT_SEC):
                         VOLUME -= VOL_STEP
-                        set_volume(max(f"{VOLUME}%", "5%"))
+                        VOLUME = max(5, VOLUME)
+                        set_volume(f"{VOLUME}%")
                         lcd.show("Volume Down ", f"Now at {VOLUME}%")
                         last_repeat[pin] = now
                 # Volume Up (Button 3 while held)
                 elif idx == 3:
                     if held_for >= 0.4 and (now - last_repeat[pin] >= VOL_REPEAT_SEC):
                         VOLUME += VOL_STEP
-                        set_volume(min(f"{VOLUME}%", "100%"))
+                        VOLUME = min(100, VOLUME)
+                        set_volume(f"{VOLUME}%")
                         lcd.show("Volume Up", f"Now at {VOLUME}%")
                         last_repeat[pin] = now
                 

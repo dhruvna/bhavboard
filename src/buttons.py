@@ -31,5 +31,15 @@ class ButtonManager:
 
         return pressed
 
+    def get_pressed(self):
+        """
+        Return a list of pins that are currently pressed (active LOW).
+        """
+        pressed = []
+        for pin in BUTTON_MAPPING.keys():
+            if GPIO.input(pin) == 0:
+                pressed.append(pin)
+        return pressed
+
     def cleanup(self):
         GPIO.cleanup()

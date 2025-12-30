@@ -105,16 +105,16 @@ def main():
                 # Volume Down (Button 1 while held)
                 elif idx == 1:
                     if held_for >= 0.4 and (now - last_repeat[pin] >= VOL_REPEAT_SEC):
-                        volume -= VOL_STEP
-                        set_volume(f"{volume}%")
-                        lcd.show("Volume Down ", f"By {VOL_STEP}%, Now at {volume}%")
+                        VOLUME -= VOL_STEP
+                        set_volume(f"{VOLUME}%")
+                        lcd.show("Volume Down ", f"By {VOL_STEP}%, Now at {VOLUME}%")
                         last_repeat[pin] = now
                 # Volume Up (Button 3 while held)
                 elif idx == 3:
                     if held_for >= 0.4 and (now - last_repeat[pin] >= VOL_REPEAT_SEC):
-                        volume += VOL_STEP
-                        set_volume(f"{volume}%")
-                        lcd.show("Volume Up", f"By {VOL_STEP}%, Now at {volume}%")
+                        VOLUME += VOL_STEP
+                        set_volume(f"{VOLUME}%")
+                        lcd.show("Volume Up", f"By {VOL_STEP}%, Now at {VOLUME}%")
                         last_repeat[pin] = now
                 
                 time.sleep(0.05) # small delay to avoid busy loop

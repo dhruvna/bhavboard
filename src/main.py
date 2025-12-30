@@ -6,37 +6,108 @@ from lcd import LCDManager
 import time
 import subprocess
 
+# ===== Hold behavior config =====
+MIXER_CONTROL = "PCM"   
+VOL_STEP = "5%"            # per tick
+VOL_REPEAT_SEC = 0.15      # how fast volume changes while held
+SHUTDOWN_HOLD_SEC = 5.0    # how long to hold Button 2 to shutdown
+
+def set_volume(delta: str):
+    # delta of +- VOL_STEP"
+    subprocess.run(
+        ["amixer", "-q", "sset", MIXER_CONTROL, delta],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+def shutdown_now(lcd: LCDManager):
+    lcd.show("Shutting down", "Byebye Bhav :)")
+    time.sleep(0.5)
+    subprocess.run(["sudo", "shutdown", "-h", "now"])
+
 def main():
     buttons = ButtonManager()
     lcd = LCDManager()
     audio = AudioManager()
-    lcd.show("BhavBoard", "Initialized")
-    time.sleep(2)
-    lcd.show("Push a button", "to begin!")
-    hold_start = None
-    HOLD_TIME_SEC = 5
 
+    lcd.show("BhavBoard", "Initialized")
+    time.sleep(1.5)
+    lcd.show("Push a button", "to begin!")
+    
+    # pin -> time (when hold started)
+    hold_start = {}
+    # pin -> time (when we last applied repeating action)
+    last_repeat = {}
+        
     try:
         while True:
+
+            now = time.monotonic()
+
+            # ---- Edge-triggered sound playback ----
             presses = buttons.poll()
             for pin in presses:
-                lcd.show(f"Playing: ", f"{BUTTON_MAPPING[pin]['label']}")
-                audio.play(f"sounds/{BUTTON_MAPPING[pin]['sound']}")
-            time.sleep(0.01)
+                cfg = BUTTON_MAPPING[pin]
+                lcd.show("Playing:", cfg["label"])
+                audio.play(f"sounds/{cfg['sound']}")
 
-            pressed_now = buttons.get_pressed()
-            if pressed_now:
-                if hold_start is None:
-                    hold_start = time.time()
-                elif time.time() - hold_start >= HOLD_TIME_SEC:
-                    lcd.show("Shutting down in 5", "Please wait...")
-                    time.sleep(0.5)
-                    lcd.clear()
-                    subprocess.run(
-                        ["sudo", "/sbin/shutdown", "-h", "now"]
-                    )
-            else:
-                hold_start = None
+            # ---- Level-triggered hold behaviors ----
+            pressed_now = set(buttons.get_pressed())
+
+            # Start hold timers for newly pressed pins
+            for pin in pressed_now:
+                if pin not in hold_start:
+                    hold_start[pin] = now
+                    last_repeat[pin] = 0.0
+            
+            # Clear timers for released pins
+            for pin in list(hold_start.keys()):
+                if pin not in pressed_now:
+                    del hold_start[pin]
+                    del last_repeat[pin]
+            
+            # Handle repeating actions for held buttons
+            for pin, t0 in hold_start.items():
+                cfg = BUTTON_MAPPING[pin]
+                idx = cfg["index"]
+                held_for = now - t0
+
+                # Shutdown (Button 2 when held, includes countdown)
+                if idx == 2:  # Shutdown button
+                    if held_for >= SHUTDOWN_HOLD_SEC:
+                        shutdown_now(lcd)
+                    else:
+                        lcd.show(
+                            "Hold to shutdown",
+                            f"{int(SHUTDOWN_HOLD_SEC - held_for)+1}s left"
+                        )
+
+                # if idx == 2:
+                #     remaining = int(SHUTDOWN_HOLD_SEC - held_for + 0.999)  # ceil-ish
+                #     if remaining >= 0 and held_for < SHUTDOWN_HOLD_SEC:
+                #         # Update countdown (don’t spam too hard)
+                #         if now - last_repeat[pin] >= 0.2:
+                #             lcd.show("Hold to power off", f"Shutting in {remaining}")
+                #             last_repeat[pin] = now
+
+                #     if held_for >= SHUTDOWN_HOLD_SEC:
+                #         shutdown_now(lcd)
+                #         return
+
+                # Volume Down (Button 1 while held)
+                elif idx == 1:
+                    if held_for >= 0.4 and (now - last_repeat[pin] >= VOL_REPEAT_SEC):
+                        set_volume(f"{-VOL_STEP}")
+                        lcd.show("Volume", "Down")
+                        last_repeat[pin] = now
+                # Volume Up (Button 3 while held)
+                elif idx == 3:
+                    if held_for >= 0.4 and (now - last_repeat[pin] >= VOL_REPEAT_SEC):
+                        set_volume(f"{VOL_STEP}+")
+                        lcd.show("Volume", "Up")
+                        last_repeat[pin] = now
+                
+                time.sleep(0.05) # small delay to avoid busy loop
 
     except KeyboardInterrupt:
         buttons.cleanup()

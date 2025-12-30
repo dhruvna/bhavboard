@@ -54,47 +54,33 @@ Portable button-based soundboard built on a Raspberry Pi Zero W.
 - shows boot message
 - shows last pressed button label (based on mapping in `config.py`)
 
----
-
-### TODO 
-
 ### Audio Bring-Up
 - Connect USB speaker via OTG.
-- Verify detection (`aplay -l`).
-- Choose playback backend (`aplay`, `mpg123`, etc.).
 - Create `audio.py` abstraction:
 - play sound
-- interrupt / ignore policy
 - Add `sounds/` directory and naming convention.
 - Map buttons → sound files in `config.py`.
 
-
 ### Full Soundboard Behavior
 - Integrate buttons + LCD + audio.
-- Decide playback behavior:
-- interrupt vs non-interrupt
-- Handle errors (missing files, no audio device).
 
 ### Zero-Knowledge User Experience
 - Auto-start program on boot (systemd service).
-- Optional shutdown strategy.
-- Ensure consistent startup behavior.
+- Shutdown via button hold
 
 ### Hardware Finalization
 - Solder 40-pin header to Pi Zero W.
-- Transition from breadboard to perfboard or enclosure.
+- Plan enclosure:
+- Button layout
+- LCD window
+- Speaker vents
+
+### TODO 
+
+### Hardware Finalization
+- Transition from breadboard enclosure
 - Clean wiring and strain relief.
 - Plan enclosure:
-- button layout
-- LCD window
-- speaker vents
-- power access
+- Power access
 
-### Optional Enhancements
-- Volume control (rotary encoder)
-- Multiple sound banks
-- Battery monitoring (if moving to LiPo later)
-
-### Resume Point
-
-Next step is  **audio bring-up once parts arrive**
+Next step is  **hardware assembly**

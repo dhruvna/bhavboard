@@ -97,7 +97,7 @@ def main():
                 elif idx == 1:
                     if held_for >= 0.4 and (now - last_repeat[pin] >= VOL_REPEAT_SEC):
                         VOLUME -= VOL_STEP
-                        VOLUME = max(5, VOLUME)
+                        VOLUME = max(10, VOLUME)
                         set_volume(f"{VOLUME}%")
                         lcd.show("Volume Down ", f"Now at {VOLUME}%")
                         last_repeat[pin] = now

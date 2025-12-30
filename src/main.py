@@ -21,7 +21,7 @@ def set_volume(delta: str):
     )
 
 def shutdown_now(lcd: LCDManager):
-    lcd.show("Shutting down", "Byebye Bhav :)")
+    lcd.show("Safe to unplug", "")
     time.sleep(0.5)
     subprocess.run(["sudo", "shutdown", "-h", "now"])
 
@@ -30,7 +30,7 @@ def main():
     lcd = LCDManager()
     audio = AudioManager()
 
-    subprocess.run(
+    subprocess.run( # set initial volume to 50%
         ["amixer", "-q", "sset", MIXER_CONTROL, "50%"],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
@@ -81,40 +81,35 @@ def main():
                 held_for = now - t0
 
                 # Shutdown (Button 2 when held, includes countdown)
-                if idx == 2:  # Shutdown button
+                if idx == 2:
+                    remaining = int(SHUTDOWN_HOLD_SEC - held_for + 0.999)
+                    if remaining >= 0 and held_for < SHUTDOWN_HOLD_SEC:
+                        # Update countdown (don’t spam too hard)
+                        if now - last_repeat[pin] >= 0.2:
+                            lcd.show("Hold to power off", f"Shutting in {remaining}")
+                            last_repeat[pin] = now
+
                     if held_for >= SHUTDOWN_HOLD_SEC:
+                        lcd.show("Shutting down", "Byebye Bhav :)")
+                        time.sleep(1.0)
+                        lcd.backlight(False)
+                        lcd.clear()
                         shutdown_now(lcd)
-                    else:
-                        lcd.show(
-                            "Hold to shutdown",
-                            f"{int(SHUTDOWN_HOLD_SEC - held_for)+1}s left"
-                        )
-
-                # if idx == 2:
-                #     remaining = int(SHUTDOWN_HOLD_SEC - held_for + 0.999)  # ceil-ish
-                #     if remaining >= 0 and held_for < SHUTDOWN_HOLD_SEC:
-                #         # Update countdown (don’t spam too hard)
-                #         if now - last_repeat[pin] >= 0.2:
-                #             lcd.show("Hold to power off", f"Shutting in {remaining}")
-                #             last_repeat[pin] = now
-
-                #     if held_for >= SHUTDOWN_HOLD_SEC:
-                #         shutdown_now(lcd)
-                #         return
+                        return
 
                 # Volume Down (Button 1 while held)
                 elif idx == 1:
                     if held_for >= 0.4 and (now - last_repeat[pin] >= VOL_REPEAT_SEC):
                         VOLUME -= VOL_STEP
                         set_volume(f"{VOLUME}%")
-                        lcd.show("Volume Down ", f"By {VOL_STEP}%, Now at {VOLUME}%")
+                        lcd.show("Volume Down ", f"Now at {VOLUME}%")
                         last_repeat[pin] = now
                 # Volume Up (Button 3 while held)
                 elif idx == 3:
                     if held_for >= 0.4 and (now - last_repeat[pin] >= VOL_REPEAT_SEC):
                         VOLUME += VOL_STEP
                         set_volume(f"{VOLUME}%")
-                        lcd.show("Volume Up", f"By {VOL_STEP}%, Now at {VOLUME}%")
+                        lcd.show("Volume Up", f"Now at {VOLUME}%")
                         last_repeat[pin] = now
                 
                 time.sleep(0.05) # small delay to avoid busy loop

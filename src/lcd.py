@@ -29,3 +29,10 @@ class LCDManager:
             self.lcd.clear()
         except OSError as e:
             print(f"[LCD] I2C Error: {e}")
+    
+    def backlight(self, on: bool):
+        try:
+            self.lcd.backlight_enabled = on
+        except Exception:
+            pass
+

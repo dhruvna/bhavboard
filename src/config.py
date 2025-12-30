@@ -35,18 +35,18 @@ BUTTON_MAPPING = {
     },
     16: {
         "index": 7,
-        "label": "Zaahen1",
-        "sound": "Zaahen1.wav"
+        "label": "IYADUWADUWAY",
+        "sound": "Ksante.wav"
     },
     20: {
         "index": 8,
-        "label": "Zaahen2",
-        "sound": "Zaahen2.wav"
+        "label": "SHAWTY",
+        "sound": "Shawty.wav"
     },
     21: {
         "index": 9,
-        "label": "Zaahen3",
-        "sound": "Zaahen3.wav"
+        "label": "SLAY Bells",
+        "sound": "SleighBells.wav"
     }
 }
 

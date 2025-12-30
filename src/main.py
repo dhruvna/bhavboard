@@ -21,7 +21,7 @@ def set_volume(delta: str):
     )
 
 def shutdown_now(lcd: LCDManager):
-    lcd.show("Safe to unplug", "")
+    lcd.show("Shutting down", "Byebye Bhav :)")
     time.sleep(0.5)
     subprocess.run(["sudo", "shutdown", "-h", "now"])
 
@@ -30,7 +30,7 @@ def main():
     lcd = LCDManager()
     audio = AudioManager()
 
-    subprocess.run( # set initial volume to 50%
+    subprocess.run( # 
         ["amixer", "-q", "sset", MIXER_CONTROL, "50%"],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
@@ -85,15 +85,11 @@ def main():
                     remaining = int(SHUTDOWN_HOLD_SEC - held_for + 0.999)
                     if remaining >= 0 and held_for < SHUTDOWN_HOLD_SEC:
                         # Update countdown (don’t spam too hard)
-                        if now - last_repeat[pin] >= 0.2:
+                        if now - last_repeat[pin] >= 0.5:
                             lcd.show("Hold to power off", f"Shutting in {remaining}")
                             last_repeat[pin] = now
 
                     if held_for >= SHUTDOWN_HOLD_SEC:
-                        lcd.show("Shutting down", "Byebye Bhav :)")
-                        time.sleep(1.0)
-                        lcd.backlight(False)
-                        lcd.clear()
                         shutdown_now(lcd)
                         return
 
@@ -101,14 +97,14 @@ def main():
                 elif idx == 1:
                     if held_for >= 0.4 and (now - last_repeat[pin] >= VOL_REPEAT_SEC):
                         VOLUME -= VOL_STEP
-                        set_volume(f"{VOLUME}%")
+                        set_volume(max(f"{VOLUME}%", "5%"))
                         lcd.show("Volume Down ", f"Now at {VOLUME}%")
                         last_repeat[pin] = now
                 # Volume Up (Button 3 while held)
                 elif idx == 3:
                     if held_for >= 0.4 and (now - last_repeat[pin] >= VOL_REPEAT_SEC):
                         VOLUME += VOL_STEP
-                        set_volume(f"{VOLUME}%")
+                        set_volume(min(f"{VOLUME}%", "100%"))
                         lcd.show("Volume Up", f"Now at {VOLUME}%")
                         last_repeat[pin] = now
                 

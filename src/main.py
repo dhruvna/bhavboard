@@ -87,7 +87,7 @@ def main():
                         if remaining >= 0 and held_for < SHUTDOWN_HOLD_SEC:
                             # Update countdown (don’t spam too hard)
                             if now - last_repeat[pin] >= 1:
-                                lcd.show("Hold to power off", f"Shutting in {remaining}")
+                                lcd.show("Hold for shutoff", f"Off in {remaining}")
                                 last_repeat[pin] = now
 
                     if held_for >= SHUTDOWN_HOLD_SEC:

@@ -11,7 +11,6 @@ MIXER_CONTROL = "PCM"
 VOL_STEP = 5            # per tick
 VOL_REPEAT_SEC = 0.15      # how fast volume changes while held
 SHUTDOWN_HOLD_SEC = 5.0    # how long to hold Button 2 to shutdown
-SHUTDOWN_DISPLAY_DELAY = 1.0  # seconds before showing shutdown UI
 
 def set_volume(delta: str):
     # delta of +- VOL_STEP"
@@ -83,14 +82,13 @@ def main():
 
                 # Shutdown (Button 2 when held, includes countdown)
                 if idx == 2:
-                    if held_for >= SHUTDOWN_DISPLAY_DELAY:
+                    if held_for >= 0.4:
                         remaining = int(SHUTDOWN_HOLD_SEC - held_for + 0.999)
-                        
-                    if remaining >= 0 and held_for < SHUTDOWN_HOLD_SEC:
-                        # Update countdown (don’t spam too hard)
-                        if now - last_repeat[pin] >= 0.5:
-                            lcd.show("Hold to power off", f"Shutting in {remaining}")
-                            last_repeat[pin] = now
+                        if remaining >= 0 and held_for < SHUTDOWN_HOLD_SEC:
+                            # Update countdown (don’t spam too hard)
+                            if now - last_repeat[pin] >= 0.5:
+                                lcd.show("Hold to power off", f"Shutting in {remaining}")
+                                last_repeat[pin] = now
 
                     if held_for >= SHUTDOWN_HOLD_SEC:
                         shutdown_now(lcd)

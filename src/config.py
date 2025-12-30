@@ -20,7 +20,7 @@ BUTTON_MAPPING = {
     },
     19: {
         "index": 4,
-        "label": "Fly Me to the Pooooo",
+        "label": "Fly ME TO THE...",
         "sound": "FLYMETOTHEPOO.wav"
     },
     26: {

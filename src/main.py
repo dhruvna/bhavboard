@@ -8,7 +8,7 @@ import subprocess
 
 # ===== Hold behavior config =====
 MIXER_CONTROL = "PCM"   
-VOL_STEP = "5%"            # per tick
+VOL_STEP = 5            # per tick
 VOL_REPEAT_SEC = 0.15      # how fast volume changes while held
 SHUTDOWN_HOLD_SEC = 5.0    # how long to hold Button 2 to shutdown
 
@@ -29,6 +29,14 @@ def main():
     buttons = ButtonManager()
     lcd = LCDManager()
     audio = AudioManager()
+
+    subprocess.run(
+        ["amixer", "-q", "sset", MIXER_CONTROL, "50%"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+    VOLUME = 50 # initial volume percentage
 
     lcd.show("BhavBoard", "Initialized")
     time.sleep(1.5)
@@ -97,14 +105,16 @@ def main():
                 # Volume Down (Button 1 while held)
                 elif idx == 1:
                     if held_for >= 0.4 and (now - last_repeat[pin] >= VOL_REPEAT_SEC):
-                        set_volume(f"{-VOL_STEP}")
-                        lcd.show("Volume", "Down")
+                        volume -= VOL_STEP
+                        set_volume(f"{volume}%")
+                        lcd.show("Volume Down ", f"By {VOL_STEP}%, Now at {volume}%")
                         last_repeat[pin] = now
                 # Volume Up (Button 3 while held)
                 elif idx == 3:
                     if held_for >= 0.4 and (now - last_repeat[pin] >= VOL_REPEAT_SEC):
-                        set_volume(f"{VOL_STEP}+")
-                        lcd.show("Volume", "Up")
+                        volume += VOL_STEP
+                        set_volume(f"{volume}%")
+                        lcd.show("Volume Up", f"By {VOL_STEP}%, Now at {volume}%")
                         last_repeat[pin] = now
                 
                 time.sleep(0.05) # small delay to avoid busy loop

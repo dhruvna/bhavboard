@@ -82,11 +82,11 @@ def main():
 
                 # Shutdown (Button 2 when held, includes countdown)
                 if idx == 2:
-                    if held_for >= 0.4:
+                    if held_for >= 1:
                         remaining = int(SHUTDOWN_HOLD_SEC - held_for + 0.999)
                         if remaining >= 0 and held_for < SHUTDOWN_HOLD_SEC:
                             # Update countdown (don’t spam too hard)
-                            if now - last_repeat[pin] >= 0.5:
+                            if now - last_repeat[pin] >= 1:
                                 lcd.show("Hold to power off", f"Shutting in {remaining}")
                                 last_repeat[pin] = now
 

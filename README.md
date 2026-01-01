@@ -9,7 +9,21 @@ Portable button-based soundboard built on a Raspberry Pi Zero W.
 
 ### Development & Workflow
 - Raspberry Pi Zero W accessible via SSH
-- GitHub repo https://github.com/dhruvna/bhavboard
+
+- sudo apt update
+- sudo apt -y full-upgrade
+- sudo reboot
+
+Enable I2C Interface
+- sudo raspi-config
+
+Helpful Util Installation
+- sudo apt install -y git python3-venv python3-pip i2c-tools alsa-utils
+
+Clone GitHub repo (Make sure you have valid ssh key added)
+- cd ~
+- git clone git@github.com:dhruvna/bhavboard.git 
+- cd bhavboard
 
 ### Hardware Bring-Up
 - GPIO button input system works:

@@ -7,6 +7,7 @@ import time
 import subprocess
 import signal
 import sys
+import random
 
 # ===== Hold behavior config =====
 MIXER_CONTROL = "PCM"   
@@ -16,6 +17,16 @@ SHUTDOWN_HOLD_SEC = 5.0    # how long to hold Button 2 to shutdown
 
 IDLE_LINE1 = "Push a button"
 IDLE_LINE2 = "to begin!"
+
+# Button Combos (GPIO BCM Numbered)
+COMBO_67 = frozenset({12, 16}) 
+COMBO_67_SOUNDS = [
+    "67_Austin.wav",
+    "67_Bhavik.wav",
+    "67_Bhavik2.wav",
+    "67_Tristan.wav"
+]
+
 
 def set_volume(delta: str):
     # delta of +- VOL_STEP"
@@ -63,6 +74,7 @@ def main():
     pending_idle = False
     idle_due_time = 0.0
     was_playing = False
+    active_combos = set()  # combos currently being held 
 
     # pin -> time (when hold started)
     hold_start = {}
@@ -74,8 +86,45 @@ def main():
 
             now = time.monotonic()
 
+            # ---- Input capture ----
+            presses = set(buttons.poll())          # newly pressed pins this tick
+            pressed_now = set(buttons.get_pressed())  # pins currently held down
+
+            # ---- Combo detection (rising edge) ----
+            combo_fired = None
+
+            # Define combos in priority order (first match wins)
+            combos = [
+                ("RANDOM_67", COMBO_67),
+            ]
+
+            for name, combo in combos:
+                if combo.issubset(pressed_now):
+                    if combo not in active_combos:
+                        # rising edge: combo just became active
+                        active_combos.add(combo)
+                        combo_fired = name
+                    break
+
+            # Clear combos that are no longer held
+            for combo in list(active_combos):
+                if not combo.issubset(pressed_now):
+                    active_combos.remove(combo)
+
+            # If a combo fired, consume its member presses so singles don't also trigger
+            if combo_fired == "RANDOM_67":
+                presses -= set(COMBO_67)
+
+            # ---- Handle combo action (if any) ----
+            if combo_fired == "RANDOM_67":
+                pending_idle = False
+                sound = random.choice(COMBO_67_SOUNDS)
+                lcd.show("67 Unlocked!", "Good luck :)")
+                audio.play(f"sounds/{sound}")
+                was_playing = True
+
+            
             # ---- Edge-triggered sound playback ----
-            presses = buttons.poll()
             for pin in presses:
                 pending_idle = False
                 cfg = BUTTON_MAPPING[pin]
@@ -84,7 +133,7 @@ def main():
                 was_playing = True
 
             # ---- Level-triggered hold behaviors ----
-            pressed_now = set(buttons.get_pressed())
+            # pressed_now = set(buttons.get_pressed())
 
             # Start hold timers for newly pressed pins
             for pin in pressed_now:

@@ -18,9 +18,6 @@ SHUTDOWN_HOLD_SEC = 5.0    # how long to hold Button 2 to shutdown
 IDLE_LINE1 = "Push a button"
 IDLE_LINE2 = "to begin!"
 
-UNLOCK_SOUND = "Unlock.wav"
-
-
 # Button Combos (GPIO BCM Numbered)
 COMBO_67 = frozenset({12, 16}) 
 COMBO_67_SOUNDS = [
@@ -40,6 +37,7 @@ INSTRUCTION_PAGES = [
     ("Volume:", "Hold 1 = Down"),
     ("Volume:", "Hold 3 = Up"),
     ("Power:",  "Hold 2 = Off"),
+    ("Help:",   "Press 1 + 3"),
     ("Tip:",    "Try combos ;)"),
 ]
 
@@ -183,8 +181,6 @@ def main():
                 pending_idle = False
                 sound = random.choice(COMBO_67_SOUNDS)
                 lcd.show("Enjoy the 67", "67676767!!!!")
-                audio.play(f"sounds/{UNLOCK_SOUND}")
-                time.sleep(3)  # brief pause between unlock and sound
                 audio.play(f"sounds/{sound}")
                 was_playing = True
             
@@ -192,8 +188,6 @@ def main():
                 pending_idle = False
                 sound = COMBO_25_SOUND
                 lcd.show("Merry Xmas!", "- dhruvna")
-                audio.play(f"sounds/{UNLOCK_SOUND}")
-                time.sleep(3)  # brief pause between unlock and sound
                 audio.play(f"sounds/{sound}")
                 was_playing = True
 

@@ -210,7 +210,9 @@ def main():
             if combo_fired == "RANDOM_67":
                 pending_idle = False
                 sound = random.choice(COMBO_67_SOUNDS)
-                lcd.show("67 Unlocked!", "Good luck :)")
+                if not COMBO_67_UNLOCKED:
+                    COMBO_67_UNLOCKED = True
+                lcd.show("Enjoy the 67", "67676767!!!!")
                 audio.play(f"sounds/{UNLOCK_SOUND}")
                 time.sleep(5.5)  # brief pause between unlock and sound
                 audio.play(f"sounds/{sound}")
@@ -219,6 +221,8 @@ def main():
             elif combo_fired == "MERRY_XMAS_25":
                 pending_idle = False
                 sound = COMBO_25_SOUND
+                if not COMBO_25_UNLOCKED:
+                    COMBO_25_UNLOCKED = True
                 lcd.show("Merry Xmas!", "- dhruvna")
                 audio.play(f"sounds/{UNLOCK_SOUND}")
                 time.sleep(5.5)  # brief pause between unlock and sound

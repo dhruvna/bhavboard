@@ -4,7 +4,6 @@ SECRET SANTA 2025 FOR BHAVIK!
 Portable button-based soundboard built on a Raspberry Pi Zero W.
 
 ---
-
 ### Development & Workflow
 - Raspberry Pi Zero W accessible via SSH
 

@@ -128,13 +128,17 @@ dhruvna ALL=NOPASSWD: /sbin/shutdown, /usr/sbin/shutdown, /bin/systemctl powerof
 - Button layout
 - LCD window
 - Speaker vents
+- Transition from breadboard enclosure
+- Clean wiring and strain relief
+- Door hinge + latch
 
 ### TODO 
+- 67 if 6+7 are pressed at the same time (or held idk)
+- OR IF PRESSED 6 then 7?
+- Record:
+- something quirky happy secret santa or whatever
+- SOUND UNLOCKED
+- Download unlock sound
 
-### Hardware Finalization
-- Transition from breadboard enclosure
-- Clean wiring and strain relief.
-- Plan enclosure:
-- Power access
+- 16 character help instructions line by line, make so if any button pressed for long time it shows up?
 
-Next step is  **hardware assembly**

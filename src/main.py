@@ -30,11 +30,8 @@ COMBO_67_SOUNDS = [
     "67_Tristan.wav",
     "67_Dhruv.wav"
 ]
-COMBO_67_UNLOCKED = False
-
 COMBO_25 = frozenset({6, 26})
 COMBO_25_SOUND = "MerryChristmas.wav"
-COMBO_25_UNLOCKED = False
 
 HELP_COMBO = frozenset({5, 13})  # Buttons 1 + 3
 
@@ -181,51 +178,22 @@ def main():
             elif combo_fired == "MERRY_XMAS_25":
                 presses -= set(COMBO_25)
 
-            # # ---- Handle combo action (if any) ----
-            # if combo_fired == "RANDOM_67":
-            #     pending_idle = False
-            #     sound = random.choice(COMBO_67_SOUNDS)
-            #     if not COMBO_67_UNLOCKED:
-            #         COMBO_67_UNLOCKED = True
-            #         audio.play(f"sounds/{UNLOCK_SOUND}")
-            #         lcd.show("67 Unlocked!", "Good luck :)")
-            #         time.sleep(5.5)  # Allow time for unlock to play
-            #     lcd.show("Enjoy the 67", "67676767!!!!")
-            #     audio.play(f"sounds/{sound}")
-            #     was_playing = True
-            
-            # elif combo_fired == "MERRY_XMAS_25":
-            #     pending_idle = False
-            #     sound = COMBO_25_SOUND
-            #     if not COMBO_25_UNLOCKED:
-            #         COMBO_25_UNLOCKED = True
-            #         audio.play(f"sounds/{UNLOCK_SOUND}")
-            #         lcd.show("25 Unlocked!", "Merry Xmas :)")
-            #         time.sleep(5.5)  # Allow time for unlock to play
-            #     lcd.show("Merry Xmas!", "- dhruvna")
-            #     audio.play(f"sounds/{sound}")
-            #     was_playing = True
-
             # ---- Handle combo action (if any) ----
             if combo_fired == "RANDOM_67":
                 pending_idle = False
                 sound = random.choice(COMBO_67_SOUNDS)
-                if not COMBO_67_UNLOCKED:
-                    COMBO_67_UNLOCKED = True
                 lcd.show("Enjoy the 67", "67676767!!!!")
                 audio.play(f"sounds/{UNLOCK_SOUND}")
-                time.sleep(5.5)  # brief pause between unlock and sound
+                time.sleep(3)  # brief pause between unlock and sound
                 audio.play(f"sounds/{sound}")
                 was_playing = True
             
             elif combo_fired == "MERRY_XMAS_25":
                 pending_idle = False
                 sound = COMBO_25_SOUND
-                if not COMBO_25_UNLOCKED:
-                    COMBO_25_UNLOCKED = True
                 lcd.show("Merry Xmas!", "- dhruvna")
                 audio.play(f"sounds/{UNLOCK_SOUND}")
-                time.sleep(5.5)  # brief pause between unlock and sound
+                time.sleep(3)  # brief pause between unlock and sound
                 audio.play(f"sounds/{sound}")
                 was_playing = True
 

@@ -24,3 +24,6 @@ class AudioManager:
             )
         except Exception as e:
             print(f"[AUDIO] Playback error: {e}")
+
+    def is_playing(self) -> bool:
+        return self.current_process and self.current_process.poll() is None

@@ -15,6 +15,12 @@ class LCDManager:
 
     def show(self, line1="", line2=""):
         try:
+            # If we previously disabled backlight/display, re-enable
+            if hasattr(self.lcd, "backlight_enabled"):
+                self.lcd.backlight_enabled = True
+            if hasattr(self.lcd, "display_enabled"):
+                self.lcd.display_enabled = True
+
             self.lcd.clear()
             self.lcd.write_string(line1)
             if line2:
@@ -30,4 +36,17 @@ class LCDManager:
         except OSError as e:
             print(f"[LCD] I2C Error: {e}")
 
+    def off(self):
+        try:
+            self.lcd.clear()
+            # These attributes exist on many RPLCD backends; guard so we never crash if absent.
+            if hasattr(self.lcd, "backlight_enabled"):
+                self.lcd.backlight_enabled = False
+            if hasattr(self.lcd, "display_enabled"):
+                self.lcd.display_enabled = False
+            time.sleep(0.1)
+        except OSError as e:
+            print(f"[LCD] I2C Error: {e}")
+        except Exception as e:
+            print(f"[LCD] off() error: {e}")
 

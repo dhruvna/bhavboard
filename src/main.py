@@ -5,12 +5,17 @@ from audio import AudioManager
 from lcd import LCDManager
 import time
 import subprocess
+import signal
+import sys
 
 # ===== Hold behavior config =====
 MIXER_CONTROL = "PCM"   
 VOL_STEP = 5            # per tick
 VOL_REPEAT_SEC = 0.15      # how fast volume changes while held
 SHUTDOWN_HOLD_SEC = 5.0    # how long to hold Button 2 to shutdown
+
+IDLE_LINE1 = "Push a button"
+IDLE_LINE2 = "to begin!"
 
 def set_volume(delta: str):
     # delta of +- VOL_STEP"
@@ -22,14 +27,27 @@ def set_volume(delta: str):
 
 def shutdown_now(lcd: LCDManager):
     lcd.show("Shutting down", "Byebye Bhav :)")
-    time.sleep(0.5)
+    time.sleep(0.8)     # let them read it
+    lcd.off()           # blank the display while the Pi is halted
+    time.sleep(0.2)
     subprocess.run(["sudo", "shutdown", "-h", "now"])
+
 
 def main():
     buttons = ButtonManager()
     lcd = LCDManager()
     audio = AudioManager()
 
+    def handle_exit(signum, frame):
+        try:
+            lcd.off()
+        finally:
+            buttons.cleanup()
+            sys.exit(0)
+
+    signal.signal(signal.SIGTERM, handle_exit)
+    signal.signal(signal.SIGINT, handle_exit)
+    
     subprocess.run( # 
         ["amixer", "-q", "sset", MIXER_CONTROL, "50%"],
         stdout=subprocess.DEVNULL,
@@ -40,8 +58,12 @@ def main():
 
     lcd.show("BhavBoard", "Initialized")
     time.sleep(1.5)
-    lcd.show("Push a button", "to begin!")
+    lcd.show(IDLE_LINE1, IDLE_LINE2)
     
+    pending_idle = False
+    idle_due_time = 0.0
+    was_playing = False
+
     # pin -> time (when hold started)
     hold_start = {}
     # pin -> time (when we last applied repeating action)
@@ -55,6 +77,7 @@ def main():
             # ---- Edge-triggered sound playback ----
             presses = buttons.poll()
             for pin in presses:
+                pending_idle = False
                 cfg = BUTTON_MAPPING[pin]
                 lcd.show("Playing:", cfg["label"])
                 audio.play(f"sounds/{cfg['sound']}")
@@ -111,7 +134,25 @@ def main():
                         lcd.show("Volume Up", f"Now at {VOLUME}%")
                         last_repeat[pin] = now
                 
-                time.sleep(0.05) # small delay to avoid busy loop
+            # ---- Idle display management ----
+                playing = audio.is_playing()
+
+                # Detect "audio just finished"
+                if was_playing and not playing:
+                    # Just stopped playing
+                    pending_idle = True
+                    idle_due_time = now + 1 # 1 second until idle
+
+                # If we're due to restore idle (and nothing is currently playing), do it
+                if pending_idle and (now>=idle_due_time) and not playing:
+                    # Only restore if no buttons currently held (prevents fighting volume/shutdown text)
+                    if len(pressed_now) == 0:
+                        lcd.show(IDLE_LINE1, IDLE_LINE2)
+                        pending_idle = False
+
+                was_playing = playing
+
+            time.sleep(0.05) # small delay to avoid busy loop
 
     except KeyboardInterrupt:
         buttons.cleanup()

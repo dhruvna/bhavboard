@@ -11,7 +11,7 @@ BUTTON_MAPPING = {
     6:  {
         "index": 2,
         "label": "Bhavtrosballs",
-        "sound": "bhavtros_balls.wav"
+        "sound": "bhavtros_balls.wav"   
     },
     13: {
         "index": 3,
@@ -20,7 +20,7 @@ BUTTON_MAPPING = {
     },
     19: {
         "index": 4,
-        "label": "Fly ME TO THE...",
+        "label": "FLY ME TO THE...",
         "sound": "FLYMETOTHEPOO.wav"
     },
     26: {

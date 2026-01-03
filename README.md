@@ -25,6 +25,46 @@ Clone GitHub repo (Make sure you have valid ssh key added)
 - git clone git@github.com:dhruvna/bhavboard.git 
 - cd bhavboard
 
+Check i2C Bus
+- i2cdetect -y 1
+
+Check usb speaker
+- aplay -l
+
+Enable autostart systemd
+- sudo nano /etc/systemd/system/bhavboard.service
+
+Paste into bhavboard.service
+```
+[Unit]
+Description=BhavBoard Soundboard
+After=network.target sound.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=dhruvna
+WorkingDirectory=/home/dhruvna/bhavboard
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/dhruvna/bhavboard/.venv/bin/python /home/dhruvna/bhavboard/src/main.py
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable autostart systemd
+- sudo systemctl daemon-reload
+- sudo systemctl enable bhavboard.service
+- sudo systemctl start bhavboard.service
+
+Give python permission to shutoff
+sudo visudo
+
+dhruvna ALL=NOPASSWD: /sbin/shutdown, /usr/sbin/shutdown, /bin/systemctl poweroff, /bin/systemctl halt, /bin/systemctl shutdown
+
+
 ### Hardware Bring-Up
 - GPIO button input system works:
   - Active-LOW inputs

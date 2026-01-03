@@ -5,8 +5,6 @@ Portable button-based soundboard built on a Raspberry Pi Zero W.
 
 ---
 
-## DONE ALREADY
-
 ### Development & Workflow
 - Raspberry Pi Zero W accessible via SSH
 
@@ -131,14 +129,4 @@ dhruvna ALL=NOPASSWD: /sbin/shutdown, /usr/sbin/shutdown, /bin/systemctl powerof
 - Transition from breadboard enclosure
 - Clean wiring and strain relief
 - Door hinge + latch
-
-### TODO 
-- 67 if 6+7 are pressed at the same time (or held idk)
-- OR IF PRESSED 6 then 7?
-- Record:
-- something quirky happy secret santa or whatever
-- SOUND UNLOCKED
-- Download unlock sound
-
-- 16 character help instructions line by line, make so if any button pressed for long time it shows up?
 

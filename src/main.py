@@ -18,6 +18,8 @@ SHUTDOWN_HOLD_SEC = 5.0    # how long to hold Button 2 to shutdown
 IDLE_LINE1 = "Push a button"
 IDLE_LINE2 = "to begin!"
 
+UNLOCK_SOUND = "Unlock.wav"
+
 # Button Combos (GPIO BCM Numbered)
 COMBO_67 = frozenset({12, 16}) 
 COMBO_67_SOUNDS = [
@@ -27,6 +29,9 @@ COMBO_67_SOUNDS = [
     "67_Tristan.wav",
     "67_Dhruv.wav"
 ]
+
+COMBO_25 = frozenset({6, 26})
+COMBO_25_SOUND = "MerryChristmas.wav"
 
 HELP_COMBO = frozenset({5, 13})  # Buttons 1 + 3
 HELP_HOLD_SEC = 1
@@ -152,6 +157,7 @@ def main():
             combo_fired = None
             combos = [
                 ("RANDOM_67", COMBO_67),
+                ("MERRY_XMAS_25", COMBO_25)
             ]
 
             for name, combo in combos:
@@ -170,15 +176,28 @@ def main():
             # If a combo fired, consume its member presses so singles don't also trigger
             if combo_fired == "RANDOM_67":
                 presses -= set(COMBO_67)
+            elif combo_fired == "MERRY_XMAS_25":
+                presses -= set(COMBO_25)
 
             # ---- Handle combo action (if any) ----
             if combo_fired == "RANDOM_67":
                 pending_idle = False
                 sound = random.choice(COMBO_67_SOUNDS)
                 lcd.show("67 Unlocked!", "Good luck :)")
+                audio.play(f"sounds/{UNLOCK_SOUND}")
+                time.sleep(0.5)  # brief pause between unlock and sound
                 audio.play(f"sounds/{sound}")
                 was_playing = True
             
+            elif combo_fired == "MERRY_XMAS_25":
+                pending_idle = False
+                sound = COMBO_25_SOUND
+                lcd.show("Merry Xmas!", "- dhruvna")
+                audio.play(f"sounds/{UNLOCK_SOUND}")
+                time.sleep(0.5)  # brief pause between unlock and sound
+                audio.play(f"sounds/{sound}")
+                was_playing = True
+
             # ---- Edge-triggered sound playback ----
             for pin in presses:
                 pending_idle = False
@@ -186,21 +205,6 @@ def main():
                 lcd.show("Playing:", cfg["label"])
                 audio.play(f"sounds/{cfg['sound']}")
                 was_playing = True
-
-            # ---- Level-triggered hold behaviors ----
-            # pressed_now = set(buttons.get_pressed())
-
-            # # Start hold timers for newly pressed pins
-            # for pin in pressed_now:
-            #     if pin not in hold_start:
-            #         hold_start[pin] = now
-            #         last_repeat[pin] = 0.0
-            
-            # # Clear timers for released pins
-            # for pin in list(hold_start.keys()):
-            #     if pin not in pressed_now:
-            #         del hold_start[pin]
-            #         del last_repeat[pin]
             
             # Handle repeating actions for held buttons
             for pin, t0 in hold_start.items():

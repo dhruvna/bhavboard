@@ -81,6 +81,7 @@ def main():
                 cfg = BUTTON_MAPPING[pin]
                 lcd.show("Playing:", cfg["label"])
                 audio.play(f"sounds/{cfg['sound']}")
+                was_playing = True
 
             # ---- Level-triggered hold behaviors ----
             pressed_now = set(buttons.get_pressed())
@@ -125,6 +126,7 @@ def main():
                         set_volume(f"{VOLUME}%")
                         lcd.show("Volume Down ", f"Now at {VOLUME}%")
                         last_repeat[pin] = now
+
                 # Volume Up (Button 3 while held)
                 elif idx == 3:
                     if held_for >= 0.4 and (now - last_repeat[pin] >= VOL_REPEAT_SEC):
@@ -135,22 +137,22 @@ def main():
                         last_repeat[pin] = now
                 
             # ---- Idle display management ----
-                playing = audio.is_playing()
+            playing = audio.is_playing()
 
-                # Detect "audio just finished"
-                if was_playing and not playing:
-                    # Just stopped playing
-                    pending_idle = True
-                    idle_due_time = now + 1 # 1 second until idle
+            # Detect "audio just finished"
+            if was_playing and not playing:
+                # Just stopped playing
+                pending_idle = True
+                idle_due_time = now + 1 # 1 second until idle
 
-                # If we're due to restore idle (and nothing is currently playing), do it
-                if pending_idle and (now>=idle_due_time) and not playing:
-                    # Only restore if no buttons currently held (prevents fighting volume/shutdown text)
-                    if len(pressed_now) == 0:
-                        lcd.show(IDLE_LINE1, IDLE_LINE2)
-                        pending_idle = False
+            # If we're due to restore idle (and nothing is currently playing), do it
+            if pending_idle and (now>=idle_due_time) and not playing:
+                # Only restore if no buttons currently held (prevents fighting volume/shutdown text)
+                if len(pressed_now) == 0:
+                    lcd.show(IDLE_LINE1, IDLE_LINE2)
+                    pending_idle = False
 
-                was_playing = playing
+            was_playing = playing
 
             time.sleep(0.05) # small delay to avoid busy loop
 

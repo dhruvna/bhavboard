@@ -20,6 +20,7 @@ IDLE_LINE2 = "to begin!"
 
 UNLOCK_SOUND = "Unlock.wav"
 
+
 # Button Combos (GPIO BCM Numbered)
 COMBO_67 = frozenset({12, 16}) 
 COMBO_67_SOUNDS = [
@@ -29,12 +30,13 @@ COMBO_67_SOUNDS = [
     "67_Tristan.wav",
     "67_Dhruv.wav"
 ]
+COMBO_67_UNLOCKED = False
 
 COMBO_25 = frozenset({6, 26})
 COMBO_25_SOUND = "MerryChristmas.wav"
+COMBO_25_UNLOCKED = False
 
 HELP_COMBO = frozenset({5, 13})  # Buttons 1 + 3
-HELP_HOLD_SEC = 1
 
 INSTRUCTION_PAGES = [
     ("How to use:", "Press buttons"),
@@ -132,7 +134,7 @@ def main():
             # ---- Help / Instructions combo (hold Vol- + Vol+) ----
             if HELP_COMBO.issubset(pressed_now):
                 t0 = min(hold_start.get(p, now) for p in HELP_COMBO)
-                if (not help_triggered) and ((now - t0) >= HELP_HOLD_SEC):
+                if (not help_triggered):
                     help_triggered = True
 
                     # Avoid scheduling idle while we run instructions
@@ -183,18 +185,24 @@ def main():
             if combo_fired == "RANDOM_67":
                 pending_idle = False
                 sound = random.choice(COMBO_67_SOUNDS)
-                lcd.show("67 Unlocked!", "Good luck :)")
-                audio.play(f"sounds/{UNLOCK_SOUND}")
-                time.sleep(0.5)  # brief pause between unlock and sound
+                if not COMBO_67_UNLOCKED:
+                    COMBO_67_UNLOCKED = True
+                    audio.play(f"sounds/{UNLOCK_SOUND}")
+                    lcd.show("67 Unlocked!", "Good luck :)")
+                    time.sleep(5.5)  # Allow time for unlock to play
+                lcd.show("Enjoy the 67", "67676767!!!!")
                 audio.play(f"sounds/{sound}")
                 was_playing = True
             
             elif combo_fired == "MERRY_XMAS_25":
                 pending_idle = False
                 sound = COMBO_25_SOUND
+                if not COMBO_25_UNLOCKED:
+                    COMBO_25_UNLOCKED = True
+                    audio.play(f"sounds/{UNLOCK_SOUND}")
+                    lcd.show("25 Unlocked!", "Merry Xmas :)")
+                    time.sleep(5.5)  # Allow time for unlock to play
                 lcd.show("Merry Xmas!", "- dhruvna")
-                audio.play(f"sounds/{UNLOCK_SOUND}")
-                time.sleep(0.5)  # brief pause between unlock and sound
                 audio.play(f"sounds/{sound}")
                 was_playing = True
 
